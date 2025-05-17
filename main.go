@@ -5,16 +5,64 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"os"
+	"strings"
 	//"os"
 )
 
 var model string = "gemma2:2b"
+var text string = "la vida es bella"
+var lang string = "fr"
+
+type Message struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+	Done    bool   `json:"done"`
+}
+
+type Response struct {
+	Model  string   `json:"model"`
+	CreateAt string `json:"create_at"`
+	Message Message `json:"message"`
+}
 
 func main(){
+	if len(os.Args) == 3 {
+		if os.Args[1] == "-" {
+			data, err := io.ReadAll(os.Stdin)
+			if err != nil {
+				panic(err)
+			}
+			text = string(data)
+		}else{
+			text = os.Args[1]
+		}
+		lang = os.Args[2]
+		goto start
+	}
+	if len(os.Args) > 1 && os.Args[1] == "-" {
+		// Read from stdin
+		data, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			panic(err)
+		}
+		text = string(data)
+	}
+
+	if len(os.Args) == 3 && os.Args[1] == "-" {
+		// Read from stdin
+		data, err := io.ReadAll(os.Stdin)
+		if err != nil {
+			panic(err)
+		}
+		text = string(data)
+	}
+
 	//data, err := os.ReadFile("/dev/stdin")
 	//if err != nil {
 	//	panic(err)
 	//}
+	start:
 
 	req, err := http.NewRequest("POST", "http://127.0.0.1:11434/api/chat", nil)
 	// Handle error
@@ -41,7 +89,7 @@ func main(){
 	})
 	req_json["messages"] = append(req_json["messages"].([]map[string]interface{}), map[string]interface{}{
 		"role": "user",
-		"content": "Traduce `la vida es bella` al fr",
+		"content": "Traduce `" + text + "` al " + lang,
 	})
 
 
@@ -62,8 +110,26 @@ func main(){
 	if err != nil {
 		panic(err)
 	}
+	idx := bytes.Index(body, []byte("}"))
+	new_body := []byte(body[0:idx+1])
+	new_body = append(new_body, byte('}'))
 
-	// Imprimir la respuesta
-	println(string(body))
+
+
+	var resp_json Response
+
+	err = json.Unmarshal(new_body, &resp_json)
+	if err != nil {
+		panic(err)
+	}
+
+	//print result
+	for _, x := range strings.Split(string(resp_json.Message.Content), "\\n"){
+		println(x)
+	}
+	//for x  := range bytes.Split(data, []byte("\n")){
+	//	fmt.Printf("%s", string(x))
+	//}
+
 }
 
