@@ -118,19 +118,30 @@ func main(){
 	if err != nil {
 		panic(err)
 	}
-
 	var resp_json Response
-	data := bytes.Split(body, []byte("}\n"))[0]
-	data = append(data, byte('}'))
 
-	err = json.Unmarshal(data, &resp_json)
-	if err != nil {
-		panic(err)
-	}
+	data := bytes.Split(body, []byte("}\n"))
 
-	//print result
-	for _, x := range strings.Split(string(resp_json.Message.Content), "\\n"){
-		fmt.Println(x)
+	for _, i := range data {
+		if len(i) != 0 {
+			if i[len(i) - 1] != byte('}') {
+				i = append(i, byte('}'))
+			}
+		}else{
+			break
+		}
+
+		err = json.Unmarshal(i, &resp_json)
+		if err != nil {
+			break
+		}
+
+		//print result
+		for _, x := range strings.Split(string(resp_json.Message.Content), "\\n"){
+			fmt.Printf("%s", x)
+		}
+
+
 	}
 
 }
