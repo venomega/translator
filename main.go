@@ -14,6 +14,7 @@ import (
 var model string = "gemma2:2b"
 var text string = "la vida es bella"
 var lang string = "fr"
+var host string = "127.0.0.1:11434"
 
 type Message struct {
 	Role    string `json:"role"`
@@ -28,6 +29,13 @@ type Response struct {
 }
 
 func main(){
+	//looking for OLLAMA_HOST env var
+	value, exist := os.LookupEnv("OLLAMA_HOST")
+	if exist {
+		host = value
+	}
+
+	//Handling args
 	if len(os.Args) == 3 {
 		if os.Args[1] == "-" {
 			data, err := io.ReadAll(os.Stdin)
@@ -59,13 +67,9 @@ func main(){
 		text = string(data)
 	}
 
-	//data, err := os.ReadFile("/dev/stdin")
-	//if err != nil {
-	//	panic(err)
-	//}
 	start:
 
-	req, err := http.NewRequest("POST", "http://127.0.0.1:11434/api/chat", nil)
+	req, err := http.NewRequest("POST", "http://" + host + "/api/chat", nil)
 	// Handle error
 	if err != nil {
 		panic(err)
@@ -76,7 +80,6 @@ func main(){
 	req.Header.Set("Content-Type", "application/json")
 	req_json := make(map[string]interface{})
 	req_json["model"] = model
-	//req_json["system"] = "Tu proposito es recibir una orden de traduccion de texto, y devolver el resultado en el lenguaje que se requiera sin adornos en la respuesta. No hagas introduccion, ni concluciones, ni notas, ni notas importantes, ni explicaciones, solo se consiso con lo que se te pregunta, da explicaciones cuando el usuario las pida, sino, no las des.\n\n Ejemplo de lo que NO puedes hacer: \"Le monde\" se traduce al español como **\"El mundo\"**\n EJEMPLO DE COMO PUEDE SER: \"El mundo\""
 	req_json["options"] = map[string]interface{}{}
 	req_json["messages"] = make([]map[string]interface{}, 0)
 	req_json["messages"] = append(req_json["messages"].([]map[string]interface{}), map[string]interface{}{

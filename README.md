@@ -1,6 +1,6 @@
 # Translator CLI
 
-Translator CLI is a command-line tool designed to translate text using a remote translation API. The application communicates with the API to provide translations in the desired language.
+Translator CLI is a command-line tool designed to translate text using a remote LLM API. The application communicates with the API to provide translations in the desired language.
 
 ## Features
 
@@ -13,7 +13,7 @@ Translator CLI is a command-line tool designed to translate text using a remote 
 
 ### Prerequisites
 - Go installed on your system.
-- A running instance of ollama API at `http://127.0.0.1:11434/api/chat`.
+- A running instance of ollama API at `http://127.0.0.1:11434/api/chat` (could be changed with `OLLAMA_HOST` env).
 
 ### Installation
 
