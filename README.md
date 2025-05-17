@@ -22,5 +22,11 @@ Translator CLI is a command-line tool designed to translate text using a remote 
    cd translator
    go run .
    ```
-# translator
-traslate text using AI backend
+
+### Usage
+
+```bash
+$ echo -ne "Hello\n world!" | go run . - latin
+Salve,
+mundi!
+```
