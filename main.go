@@ -106,20 +106,22 @@ func main(){
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == 500{
+		println("Internal Server Error")
+		os.Exit(1)
+	}
+
 	// Leer el cuerpo de la respuesta
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
-	idx := bytes.Index(body, []byte("}"))
-	new_body := []byte(body[0:idx+1])
-	new_body = append(new_body, byte('}'))
-
-
 
 	var resp_json Response
+	data := bytes.Split(body, []byte("}\n"))[0]
+	data = append(data, byte('}'))
 
-	err = json.Unmarshal(new_body, &resp_json)
+	err = json.Unmarshal(data, &resp_json)
 	if err != nil {
 		panic(err)
 	}
