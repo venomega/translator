@@ -30,9 +30,14 @@ type Response struct {
 
 func main(){
 	//looking for OLLAMA_HOST env var
-	value, exist := os.LookupEnv("OLLAMA_HOST")
-	if exist {
-		host = value
+	value_host, exist_host := os.LookupEnv("OLLAMA_HOST")
+	if exist_host {
+		host = value_host
+	}
+
+	value_model, exist_model := os.LookupEnv("OLLAMA_MODEL")
+	if exist_model {
+		model = value_model
 	}
 
 	//Handling args
