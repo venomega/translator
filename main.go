@@ -49,22 +49,21 @@ func main(){
 		lang = os.Args[2]
 		goto start
 	}
-	if len(os.Args) > 1 && os.Args[1] == "-" {
-		// Read from stdin
-		data, err := io.ReadAll(os.Stdin)
-		if err != nil {
-			panic(err)
+	if len(os.Args) == 2 {
+		if os.Args[1] == "-" {
+			// Read from stdin
+			data, err := io.ReadAll(os.Stdin)
+			if err != nil {
+				panic(err)
+			}
+			text = string(data)
+		}else{
+			// Read from args
+			text = os.Args[1]
 		}
-		text = string(data)
-	}
-
-	if len(os.Args) == 3 && os.Args[1] == "-" {
-		// Read from stdin
-		data, err := io.ReadAll(os.Stdin)
-		if err != nil {
-			panic(err)
-		}
-		text = string(data)
+	}else{
+		//Error
+		fmt.Println("Usage: translator <text> <lang>")
 	}
 
 	start:
