@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -125,11 +126,8 @@ func main(){
 
 	//print result
 	for _, x := range strings.Split(string(resp_json.Message.Content), "\\n"){
-		println(x)
+		fmt.Println(x)
 	}
-	//for x  := range bytes.Split(data, []byte("\n")){
-	//	fmt.Printf("%s", string(x))
-	//}
 
 }
 
